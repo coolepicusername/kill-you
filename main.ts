@@ -15,7 +15,7 @@ let joe = sprites.create(img`
     . . . . 2 2 . 2 2 . . . . . . .
     . . . . 2 2 . 2 2 . . . . . . .
     . . . . 2 2 . 2 2 . . . . . . .
-`,SpriteKind.john)
+`,SpriteKind.Joe)
 let john = sprites.create(img`
     . . . . . . . . . . . . . . . .
     . . . 8 8 8 8 8 . . . . . . . .
@@ -33,7 +33,7 @@ let john = sprites.create(img`
     . . . . 8 8 . 8 8 . . . . . . .
     . . . . 8 8 . 8 8 . . . . . . .
     . . . . 8 8 . 8 8 . . . . . . .
-`, SpriteKind.joe)
+`, SpriteKind.Player)
 
 let gravity = 5
 let direction = [1,1]
@@ -43,16 +43,16 @@ let primeCoolDown = [0,0,15]
 let primaryduration = 200
 
 namespace SpriteKind {
-    export const p1Attack = SpriteKind.create()
+    export const P1Attack = SpriteKind.create()
 }
 namespace SpriteKind {
-    export const p2Attack = SpriteKind.create()
+    export const P2Attack = SpriteKind.create()
 }
 namespace SpriteKind {
-    export const joe = SpriteKind.create()
+    export const Joe = SpriteKind.create()
 }
 namespace SpriteKind {
-    export const john = SpriteKind.create()
+    export const John = SpriteKind.create()
 }
 
 tiles.setCurrentTilemap(tilemap`level1`)
@@ -233,8 +233,8 @@ controller.player1.A.onEvent(ControllerButtonEvent.Pressed, function() {
         ........................
         ........................
         ........................
-    `,SpriteKind.p1Attack)
-    primary1.setPosition(joe.x + 8 * direction[1],joe.y)
+    `,SpriteKind.P1Attack)
+    primary1.setPosition(joe.x + 16 * direction[1],joe.y)
     primary1.vx = joe.vx
 pause(primaryduration)
     primary1.destroy()
@@ -260,8 +260,8 @@ controller.player2.A.onEvent(ControllerButtonEvent.Pressed, function () {
         ........................
         ........................
         ........................
-    `, SpriteKind.p2Attack)
-    primary2.setPosition(john.x + 8 * direction[0], john.y)
+    `, SpriteKind.P2Attack)
+    primary2.setPosition(john.x + 16 * direction[0], john.y)
   primary2.vx = john.vx
     pause(primaryduration)
 primary2.destroy()
@@ -269,7 +269,13 @@ primeCoolDown[1] = primeCoolDown[2]
   }
 })
 
-sprites.onOverlap(SpriteKind.p2Attack, SpriteKind.joe, function(sprite: Sprite, otherSprite: Sprite) {
-    primeCoolDown[0] = 1000
-    
+
+sprites.onOverlap(SpriteKind.Joe, SpriteKind.P2Attack, function(sprite: Sprite, otherSprite: Sprite) {
+
+   primeCoolDown[0] = 50   
+
+        
+
+    game.splash(joe.x)
+    game.splash(sprite.x)
 })
