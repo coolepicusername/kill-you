@@ -37,6 +37,7 @@ let john = sprites.create(img`
 
 let gravity = 5
 let direction = [1,1]
+
 tiles.setCurrentTilemap(tilemap`level1`)
 scene.cameraFollowSprite(joe)
 
@@ -151,6 +152,7 @@ game.onUpdate(function() {
             . . . . . . 8 8 . 8 8 . . . . .
         `)
     }
+    
     joe.vy += gravity
     john.vy += gravity
 
