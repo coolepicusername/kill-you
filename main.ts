@@ -15,7 +15,7 @@ let joe = sprites.create(img`
     . . . . 2 2 . 2 2 . . . . . . .
     . . . . 2 2 . 2 2 . . . . . . .
     . . . . 2 2 . 2 2 . . . . . . .
-`,SpriteKind.Player)
+`,SpriteKind.john)
 let john = sprites.create(img`
     . . . . . . . . . . . . . . . .
     . . . 8 8 8 8 8 . . . . . . . .
@@ -33,18 +33,37 @@ let john = sprites.create(img`
     . . . . 8 8 . 8 8 . . . . . . .
     . . . . 8 8 . 8 8 . . . . . . .
     . . . . 8 8 . 8 8 . . . . . . .
-`, SpriteKind.Player)
+`, SpriteKind.joe)
 
 let gravity = 5
 let direction = [1,1]
 let speed = [20,20]
 let stun = [0,0]
-let primCoolDown = [0,0]
+let primeCoolDown = [0,0,15]
+let primaryduration = 200
+
+namespace SpriteKind {
+    export const p1Attack = SpriteKind.create()
+}
+namespace SpriteKind {
+    export const p2Attack = SpriteKind.create()
+}
+namespace SpriteKind {
+    export const joe = SpriteKind.create()
+}
+namespace SpriteKind {
+    export const john = SpriteKind.create()
+}
 
 tiles.setCurrentTilemap(tilemap`level1`)
 scene.cameraFollowSprite(joe)
 
 game.onUpdate(function() {
+ info.setScore(primeCoolDown[0])
+ 
+ primeCoolDown[0] -= 1
+ primeCoolDown[1] -= 1
+ 
   if (joe.x > john.x) {
       direction[0] = 1
   } else {
@@ -56,7 +75,6 @@ game.onUpdate(function() {
     }
   
   
-  info.setScore(direction[0])
        
     john.setImage(img`
         . . . . . . . . . . . . . . . .
@@ -197,5 +215,61 @@ controller.player2.onButtonEvent(ControllerButton.Up, ControllerButtonEvent.Pres
     }
 })
 controller.player1.A.onEvent(ControllerButtonEvent.Pressed, function() {
-    let 
+   if (primeCoolDown[0] < 0) {
+    let primary1 = sprites.create(img`
+        ........................
+        ........................
+        ........................
+        ........................
+        ........................
+        ........................
+        555555555555555555555555
+        555555555555555555555555
+        555555555555555555555555
+        555555555555555555555555
+        555555555555555555555555
+        ........................
+        ........................
+        ........................
+        ........................
+        ........................
+    `,SpriteKind.p1Attack)
+    primary1.setPosition(joe.x + 8 * direction[1],joe.y)
+    primary1.vx = joe.vx
+pause(primaryduration)
+    primary1.destroy()
+    primeCoolDown[0] = primeCoolDown[2]
+   }
+})
+controller.player2.A.onEvent(ControllerButtonEvent.Pressed, function () {
+  if (primeCoolDown[1] < 0) {
+    let primary2 = sprites.create(img`
+        ........................
+        ........................
+        ........................
+        ........................
+        ........................
+        ........................
+        555555555555555555555555
+        555555555555555555555555
+        555555555555555555555555
+        555555555555555555555555
+        555555555555555555555555
+        ........................
+        ........................
+        ........................
+        ........................
+        ........................
+    `, SpriteKind.p2Attack)
+    primary2.setPosition(john.x + 8 * direction[0], john.y)
+  primary2.vx = john.vx
+    pause(primaryduration)
+primary2.destroy()
+primeCoolDown[1] = primeCoolDown[2]
+  }
+})
+
+sprites.onOverlap(SpriteKind.p2Attack, SpriteKind.joe, function(sprite: Sprite, otherSprite: Sprite) {
+    primeCoolDown[0] = 1000
+    
 })
